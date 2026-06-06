@@ -30,5 +30,8 @@ class CartRequest(BaseModel):
 
 @app.post("/payment-service")
 async def process_payment(payment_request: CartRequest):
-    producer.send('payment-successful', payment_request.dict())
+    try:
+        producer.send('payment-successful', payment_request.dict())
+    except Exception as e:
+        print("Error processing payment:", e)
     return payment_request
