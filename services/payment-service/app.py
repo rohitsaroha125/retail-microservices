@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from kafka import KafkaProducer
+import json
 
 app = FastAPI()
 
@@ -9,6 +11,13 @@ origins = [
 ]
 
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["*"], allow_headers=["*"])
+
+# Kafka Producer
+producer = KafkaProducer(
+    bootstrap_servers=['localhost:9094'],
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')  # Serialize data to JSON
+)
+
 
 class PaymentRequest(BaseModel):
     id: int
@@ -21,4 +30,5 @@ class CartRequest(BaseModel):
 
 @app.post("/payment-service")
 async def process_payment(payment_request: CartRequest):
+    producer.send('payment-successful', payment_request.dict())
     return payment_request
