@@ -14,7 +14,7 @@ app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["*"], a
 
 # Kafka Producer
 producer = KafkaProducer(
-    bootstrap_servers=['localhost:9094'],
+    bootstrap_servers=['localhost:9094', 'localhost:9095', 'localhost:9096'],
     value_serializer=lambda v: json.dumps(v).encode('utf-8')  # Serialize data to JSON
 )
 

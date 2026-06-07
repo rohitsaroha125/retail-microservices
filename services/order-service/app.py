@@ -6,14 +6,14 @@ import json
 app= FastAPI()
 
 producer = KafkaProducer(
-    bootstrap_servers=['localhost:9094'],
+    bootstrap_servers=['localhost:9094', 'localhost:9095', 'localhost:9096'],
     value_serializer=lambda x: json.dumps(x).encode('utf-8')  # Serialize data to JSON
 )
 
 # Kafka Consumer
 consumer = KafkaConsumer(
     'payment-successful',
-    bootstrap_servers=['localhost:9094'],
+    bootstrap_servers=['localhost:9094', 'localhost:9095', 'localhost:9096'],
     auto_offset_reset='earliest',  # Start from the earliest message
     enable_auto_commit=True,
     group_id='order-group',
